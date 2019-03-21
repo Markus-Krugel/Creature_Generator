@@ -11,7 +11,7 @@ namespace Assets
 
         public LindenmayerSystem()
         {
-            
+            ruleset = new Dictionary<char, Rule>();
         }
 
         private void Awake()
@@ -24,22 +24,30 @@ namespace Assets
 
         public void CreateRuleset(int heads, int legs, int arms)
         {
-            StochasticRule rule = new StochasticRule('d');
-            rule.AddPossibility(15, "bd");
-            rule.AddPossibility(35, "ah");
-            rule.AddPossibility(25, "hh");
+            Rule bodyRule = new Rule('B', "M");
 
-            Rule rule2 = new Rule('b', "a");
-            Rule rule3 = new Rule('a', "ad");
+            StochasticRule metaballRule = new StochasticRule('M');
+            metaballRule.AddPossibility(15, "M");
+            metaballRule.AddPossibility(20, "MCM");
+            metaballRule.AddPossibility(30, "MCCM");
 
-            StochasticRule rule4 = new StochasticRule('h');
-            rule4.AddPossibility(35, "b");
-            rule4.AddPossibility(65, "a");
+            Rule positionRule = new Rule('C', "C");
 
-            ruleset.Add(rule.input, rule);
-            ruleset.Add(rule2.input, rule2);
-            ruleset.Add(rule3.input, rule3);
-            ruleset.Add(rule4.input, rule4);
+            //StochasticRule headRule = new StochasticRule('H');
+            //headRule.AddPossibility(50, "CM");
+            //headRule.AddPossibility(25, "CCM");
+
+            //StochasticRule legRule = new StochasticRule('L');
+            //legRule.AddPossibility(35, "CM");
+            //legRule.AddPossibility(65, "CCM");
+
+            //Rule armRule = new Rule('A', "PM");
+
+            //Rule positionRule = new Rule('P')
+
+            ruleset.Add(bodyRule.input, bodyRule);
+            ruleset.Add(metaballRule.input, metaballRule);
+            ruleset.Add(positionRule.input, positionRule);
 
             //Debug.Log(rule.GiveResult());
         }
@@ -57,7 +65,11 @@ namespace Assets
                     if (ruleset.TryGetValue(result[j], out rule))
                     {
                         string output = rule.GiveResult();
+
+                        // Replaces the character with the output of the rule
                         result = result.Remove(j, 1).Insert(j, output);
+
+                        // Adds to the counter so that you do not replace characters just added
                         j += output.Length - 1;
                     }
                     else
