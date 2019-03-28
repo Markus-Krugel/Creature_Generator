@@ -64,6 +64,9 @@
     <Compile Include="Assets\CommandExecuter.cs" />
     <Compile Include="Assets\CreatureGenerator.cs" />
     <Compile Include="Assets\LindenmayerSystem.cs" />
+    <Compile Include="Assets\Metaball.cs" />
+    <Compile Include="Assets\MetaballSpawner.cs" />
+    <Compile Include="Assets\MetaballSystem.cs" />
     <Compile Include="Assets\Rule.cs" />
     <Compile Include="Assets\StochasticRule.cs" />
     <Reference Include="UnityEditor.StandardEvents">

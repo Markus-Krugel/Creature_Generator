@@ -24,30 +24,30 @@ namespace Assets
 
         public void CreateRuleset(int heads, int legs, int arms)
         {
-            Rule bodyRule = new Rule('B', "M");
-
-            StochasticRule metaballRule = new StochasticRule('M');
-            metaballRule.AddPossibility(15, "M");
-            metaballRule.AddPossibility(20, "MCM");
-            metaballRule.AddPossibility(30, "MCCM");
-
-            Rule positionRule = new Rule('C', "C");
-
+            //Rule bodyRule = new Rule('B', "M");
+            //
+            //StochasticRule metaballRule = new StochasticRule('M');
+            //metaballRule.AddPossibility(15, "M");
+            //metaballRule.AddPossibility(20, "MCM");
+            //metaballRule.AddPossibility(30, "MCCM");
+            //
+            //Rule positionRule = new Rule('C', "C");
+            //
             //StochasticRule headRule = new StochasticRule('H');
             //headRule.AddPossibility(50, "CM");
             //headRule.AddPossibility(25, "CCM");
-
+            //
             //StochasticRule legRule = new StochasticRule('L');
             //legRule.AddPossibility(35, "CM");
             //legRule.AddPossibility(65, "CCM");
-
+            //
             //Rule armRule = new Rule('A', "PM");
-
+            //
             //Rule positionRule = new Rule('P')
-
-            ruleset.Add(bodyRule.input, bodyRule);
-            ruleset.Add(metaballRule.input, metaballRule);
-            ruleset.Add(positionRule.input, positionRule);
+            //
+            //ruleset.Add(bodyRule.input, bodyRule);
+            //ruleset.Add(metaballRule.input, metaballRule);
+            //ruleset.Add(positionRule.input, positionRule);
 
             //Debug.Log(rule.GiveResult());
         }
