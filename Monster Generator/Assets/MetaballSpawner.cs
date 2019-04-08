@@ -25,7 +25,7 @@ namespace Assets
 
                     Metaball values = prefab.GetComponent<Metaball>();
                     values.PosX = 0;
-                    values.PosY = i;
+                    values.PosY = i * 0.5f;
                     values.PosZ = 0;
                     values.power = 0.12f;
                 }
@@ -39,7 +39,7 @@ namespace Assets
 
         // Update is called once per frame
         void Update() {
-
+            GetComponent<MetaballSystem>().UpdateSystem();
         }
     }
 }

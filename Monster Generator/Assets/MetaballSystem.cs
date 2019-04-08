@@ -25,6 +25,8 @@ namespace Assets
         int trianglePointer = 0;
         int vertexPointer = 0;
 
+        int frameCount = 0;
+
         // Stores all possible solutions
         private int[,] triTable = new int[,]
     {
@@ -335,7 +337,7 @@ namespace Assets
                 metaballs.Add(metaballObjects[i].GetComponent<Metaball>());
             }
 
-            triangles = new int[90000];
+            triangles = new int[1200000];
             lattice = new Lattice(30, 30, 30, this);            
         }
 
@@ -343,6 +345,7 @@ namespace Assets
         {
             trianglePointer = 0;
             vertexPointer = 0;
+            frameCount++;
 
             March();
             RenderMesh();
@@ -350,6 +353,13 @@ namespace Assets
 
         private void RenderMesh()
         {
+            for (int i = 0; i < vertexPointer; i++)
+            {
+                Vector3 point = transform.TransformPoint(normals[i]).normalized;
+                vertices[i].x = (point.x + 1f) * 0.5f;
+                vertices[i].y = (point.y + 1f) * 0.5f;
+            }
+
             Mesh mesh = ((MeshFilter)GetComponent("MeshFilter")).mesh;
             mesh.vertices = vertices;
             mesh.uv = uv;
@@ -370,13 +380,15 @@ namespace Assets
                 while(z >= 0)
                 {
                     LatticeCube cube = lattice.GetCube(x, y, z);
-                    if (cube != null)
+                    if (cube != null && cube.lastFrame < frameCount)
                     {
                         if (DoCube(cube))
                         {
                             RecurseCube(cube);
                             z = -1;
                         }
+
+                        cube.lastFrame = frameCount;
                     }
                     else
                         z = -1;
@@ -393,8 +405,9 @@ namespace Assets
             LatticeCube adjacent;
 
             adjacent = lattice.GetCube(x + 1, y, z);
-            if (adjacent != null)
+            if (adjacent != null && adjacent.lastFrame < frameCount)
             {
+                adjacent.lastFrame = frameCount;
                 if (DoCube(adjacent))
                 {
                     RecurseCube(adjacent);
@@ -402,8 +415,9 @@ namespace Assets
             }
 
             adjacent = lattice.GetCube(x - 1, y, z);
-            if (adjacent != null)
+            if (adjacent != null && adjacent.lastFrame < frameCount)
             {
+                adjacent.lastFrame = frameCount;
                 if (DoCube(adjacent))
                 {
                     RecurseCube(adjacent);
@@ -411,8 +425,9 @@ namespace Assets
             }
 
             adjacent = lattice.GetCube(x, y + 1, z);
-            if (adjacent != null)
+            if (adjacent != null && adjacent.lastFrame < frameCount)
             {
+                adjacent.lastFrame = frameCount;
                 if (DoCube(adjacent))
                 {
                     RecurseCube(adjacent);
@@ -420,8 +435,9 @@ namespace Assets
             }
 
             adjacent = lattice.GetCube(x, y - 1, z);
-            if (adjacent != null)
+            if (adjacent != null && adjacent.lastFrame < frameCount)
             {
+                adjacent.lastFrame = frameCount;
                 if (DoCube(adjacent))
                 {
                     RecurseCube(adjacent);
@@ -429,8 +445,9 @@ namespace Assets
             }
 
             adjacent = lattice.GetCube(x, y, z + 1);
-            if (adjacent != null)
+            if (adjacent != null && adjacent.lastFrame < frameCount)
             {
+                adjacent.lastFrame = frameCount;
                 if (DoCube(adjacent))
                 {
                     RecurseCube(adjacent);
@@ -438,8 +455,9 @@ namespace Assets
             }
 
             adjacent = lattice.GetCube(x, y, z - 1);
-            if (adjacent != null)
+            if (adjacent != null && adjacent.lastFrame < frameCount)
             {
+                adjacent.lastFrame = frameCount;
                 if (DoCube(adjacent))
                 {
                     RecurseCube(adjacent);
@@ -560,11 +578,15 @@ namespace Assets
             Vector3 vector;
             LatticeEdge edge = cube.edgeArray[edgeIndex];
 
-            vector = lattice.PositionOnAxis(cube.pointArray[pointIndex], cube.pointArray[pointIndex2], edge.axis);
-            edge.position = vector;
-            edge.vertexIndex = vertexPointer;
-            normals[vertexPointer] = CalculateNormal(vector);
-            normals[vertexPointer++] = vector;
+            if (edge.lastFrame < frameCount)
+            {
+                vector = lattice.PositionOnAxis(cube.pointArray[pointIndex], cube.pointArray[pointIndex2], edge.axis);
+                edge.position = vector;
+                edge.vertexIndex = vertexPointer;
+                normals[vertexPointer] = CalculateNormal(vector);
+                normals[vertexPointer++] = vector;
+                edge.lastFrame = frameCount;
+            }
         }
 
         private Vector3 CalculateNormal(Vector3 point)
@@ -590,10 +612,12 @@ namespace Assets
             public Vector3 position;
             public int vertexIndex;
             public int axis;
+            public int lastFrame;
 
             public LatticeEdge(int axis)
             {
                 this.axis = axis;
+                lastFrame = 0;
             }
         }
 
@@ -606,6 +630,7 @@ namespace Assets
             /* This is being used to go through all metaballs
                so that you can calculate the intensity of this point */
             private MetaballSystem system;
+            public int lastFrame;
 
             private float posX, posY, posZ; 
 
@@ -633,21 +658,28 @@ namespace Assets
                 PosY = y;
                 PosZ = z;
                 this.system = system;
+                lastFrame = 0;
             }
 
             public float CalculateIntensity()
             {
                 float power = 0;
-                for (int i = 0; i < system.metaballs.Count; i++)
-                {
-                    float blobPosX = system.metaballs[i].PosX;
-                    float blobPosY = system.metaballs[i].PosY;
-                    float blobPosZ = system.metaballs[i].PosZ;
-                    float blobPower = system.metaballs[i].power;
 
-                    power += (1 / Mathf.Sqrt(((blobPosX - PosX) * (blobPosX - PosX)) +
-                                             ((blobPosY - PosY) * (blobPosY - PosY)) +
-                                             ((blobPosZ - PosZ) * (blobPosZ - PosZ)))) * blobPower;
+                if (lastFrame < system.frameCount)
+                {
+                    lastFrame = system.frameCount;
+
+                    for (int i = 0; i < system.metaballs.Count; i++)
+                    {
+                        float blobPosX = system.metaballs[i].PosX;
+                        float blobPosY = system.metaballs[i].PosY;
+                        float blobPosZ = system.metaballs[i].PosZ;
+                        float blobPower = system.metaballs[i].power;
+
+                        power += (1 / Mathf.Sqrt(((blobPosX - PosX) * (blobPosX - PosX)) +
+                                                 ((blobPosY - PosY) * (blobPosY - PosY)) +
+                                                 ((blobPosZ - PosZ) * (blobPosZ - PosZ)))) * blobPower;
+                    } 
                 }
 
                 intensity = power;
@@ -660,12 +692,13 @@ namespace Assets
         {
             public LatticeEdge[] edgeArray;
             public LatticePoint[] pointArray;
-            public int posX, posY, posZ;
+            public int posX, posY, posZ, lastFrame;
 
             public LatticeCube()
             {
                 edgeArray = new LatticeEdge[12];
                 pointArray = new LatticePoint[8];
+                lastFrame = 0;
             }
         }
 
@@ -761,7 +794,7 @@ namespace Assets
                     {
                         for (int k = 0; k < dimensionZ; k++)
                         {
-                            pointArray[pointIndex] = new LatticePoint(i, j, k, system);
+                            pointArray[pointIndex] = new LatticePoint((i / dimensionX) - 0.5f, (j / dimensionY) -0.5f, (k / dimensionZ) -0.5f, system);
                             pointIndex++;
                         }
                     }
