@@ -19,15 +19,19 @@ namespace Assets
         {
             if (!spawned)
             {
-                for (int i = 0; i < 6; i++)
-                {
-                    Instantiate(prefab, new Vector3(0, i, 0), Quaternion.identity);
+                float metaballsAmount = 6;
 
-                    Metaball values = prefab.GetComponent<Metaball>();
-                    values.PosX = 0;
-                    values.PosY = i * 0.5f;
-                    values.PosZ = 0;
-                    values.power = 0.12f;
+                for (int i = 0; i < metaballsAmount; i++)
+                {
+                    Vector3 position = new Vector3(i / metaballsAmount + 0.1f, i / metaballsAmount, i / metaballsAmount - 0.1f);
+
+                    GameObject currentBall = Instantiate(prefab, position, Quaternion.identity);
+
+                    Metaball values = currentBall.GetComponent<Metaball>();
+                    values.PosX = position.x;
+                    values.PosY = position.y;
+                    values.PosZ = position.z;
+                    values.power = 0.62f;
                 }
 
                 GetComponent<MetaballSystem>().StartSystem();

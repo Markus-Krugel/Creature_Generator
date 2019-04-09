@@ -16,7 +16,7 @@ namespace Assets
         // The list of all metaballs
         public List<Metaball> metaballs;
 
-        public float isoLevel = .5f;
+        public float isoLevel = 1.95f;
 
         Vector3[] vertices = new Vector3[300000], normals = new Vector3[300000];
         Vector2[] uv;
@@ -373,9 +373,9 @@ namespace Assets
 
             for (int i = 0; i < metaballs.Count; i++)
             {
-                x = (int) (metaballs[i].PosX + 0.5f) * lattice.dimensionX;
-                y = (int)(metaballs[i].PosY + 0.5f) * lattice.dimensionY;
-                z = (int)(metaballs[i].PosZ + 0.5f) * lattice.dimensionZ;
+                z = (int) ((metaballs[i].PosZ + 0.5f) * lattice.dimensionZ);
+                x = (int) ((metaballs[i].PosX + 0.5f) * lattice.dimensionX);
+                y = (int) ((metaballs[i].PosY + 0.5f) * lattice.dimensionY);
 
                 while(z >= 0)
                 {
@@ -788,11 +788,11 @@ namespace Assets
 
                 // create all points
                 int pointIndex = 0;
-                for (int i = 0; i < dimensionX; i++)
+                for (float i = 0; i < dimensionX; i++)
                 {
-                    for (int j = 0; j < dimensionY; j++)
+                    for (float j = 0; j < dimensionY; j++)
                     {
-                        for (int k = 0; k < dimensionZ; k++)
+                        for (float k = 0; k < dimensionZ; k++)
                         {
                             pointArray[pointIndex] = new LatticePoint((i / dimensionX) - 0.5f, (j / dimensionY) -0.5f, (k / dimensionZ) -0.5f, system);
                             pointIndex++;
@@ -836,6 +836,9 @@ namespace Assets
                             points[5] = GetPoint(i + 1, j, k + 1);
                             points[6] = GetPoint(i + 1, j + 1, k + 1);
                             points[7] = GetPoint(i, j + 1, k + 1);
+
+                            if (points[0] == null || points[1] == null || points[2] == null || points[3] == null || points[4] == null || points[5] == null || points[6] == null || points[7] == null)
+                                Debug.Log("Problem");
 
                             LatticeEdge[] edges = cube.edgeArray;
 
