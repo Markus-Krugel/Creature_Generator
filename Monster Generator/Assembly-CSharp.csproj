@@ -69,7 +69,9 @@
     <Compile Include="Assets\Scripts\MCBlob.cs" />
     <Compile Include="Assets\Scripts\OnLiquidGrounded.cs" />
     <Compile Include="Assets\Scripts\OriginalMCBlob.cs" />
+    <Compile Include="Assets\Settings.cs" />
     <Compile Include="Assets\StochasticRule.cs" />
+    <Compile Include="Assets\TextChange.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>U:/Creature_Generator/Monster Generator/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

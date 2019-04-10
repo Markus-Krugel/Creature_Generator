@@ -19,20 +19,59 @@ namespace Assets
         {
             if (!spawned)
             {
-                float metaballsAmount = 6;
+                Vector3 position = new Vector3(.16f, .26f, .16f);
 
-                for (int i = 0; i < metaballsAmount; i++)
-                {
-                    Vector3 position = new Vector3(i / metaballsAmount + 0.1f, i / metaballsAmount, i / metaballsAmount - 0.1f);
+                GameObject currentBall = Instantiate(prefab, position, Quaternion.identity);
 
-                    GameObject currentBall = Instantiate(prefab, position, Quaternion.identity);
+                Metaball values = currentBall.GetComponent<Metaball>();
+                values.PosX = position.x;
+                values.PosY = position.y;
+                values.PosZ = position.z;
+                values.power = .13f;
 
-                    Metaball values = currentBall.GetComponent<Metaball>();
-                    values.PosX = position.x;
-                    values.PosY = position.y;
-                    values.PosZ = position.z;
-                    values.power = 0.62f;
-                }
+
+                position = new Vector3(.13f, -.134f, .35f);
+
+                currentBall = Instantiate(prefab, position, Quaternion.identity);
+
+                values = currentBall.GetComponent<Metaball>();
+                values.PosX = position.x;
+                values.PosY = position.y;
+                values.PosZ = position.z;
+                values.power = .12f;
+
+
+                position = new Vector3(-.18f, .125f, -.25f);
+
+                currentBall = Instantiate(prefab, position, Quaternion.identity);
+
+                values = currentBall.GetComponent<Metaball>();
+                values.PosX = position.x;
+                values.PosY = position.y;
+                values.PosZ = position.z;
+                values.power = .16f;
+
+
+                position = new Vector3(-.13f, .23f, .255f);
+
+                currentBall = Instantiate(prefab, position, Quaternion.identity);
+
+                values = currentBall.GetComponent<Metaball>();
+                values.PosX = position.x;
+                values.PosY = position.y;
+                values.PosZ = position.z;
+                values.power = .13f;
+
+
+                position = new Vector3(-.18f, .125f, .35f);
+
+                currentBall = Instantiate(prefab, position, Quaternion.identity);
+
+                values = currentBall.GetComponent<Metaball>();
+                values.PosX = position.x;
+                values.PosY = position.y;
+                values.PosZ = position.z;
+                values.power =  .12f;
 
                 GetComponent<MetaballSystem>().StartSystem();
                 GetComponent<MetaballSystem>().UpdateSystem();

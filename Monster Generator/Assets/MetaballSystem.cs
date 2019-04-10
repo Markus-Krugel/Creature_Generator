@@ -16,7 +16,7 @@ namespace Assets
         // The list of all metaballs
         public List<Metaball> metaballs;
 
-        public float isoLevel = 1.95f;
+        public float isoLevel;
 
         Vector3[] vertices = new Vector3[300000], normals = new Vector3[300000];
         Vector2[] uv;
@@ -489,6 +489,11 @@ namespace Assets
 
             int edgeIndex = edgeTable[cubeIndex];
 
+            if(cubeIndex == 0)
+                Console.WriteLine("Problem");
+            if (cubeIndex == 255)
+                Console.WriteLine("Problem");
+
             if (edgeIndex != 0)
             {
                 if ((edgeIndex & 1) > 0)
@@ -663,11 +668,12 @@ namespace Assets
 
             public float CalculateIntensity()
             {
-                float power = 0;
+                float power;
 
                 if (lastFrame < system.frameCount)
                 {
                     lastFrame = system.frameCount;
+                    power = 0;
 
                     for (int i = 0; i < system.metaballs.Count; i++)
                     {
@@ -679,10 +685,10 @@ namespace Assets
                         power += (1 / Mathf.Sqrt(((blobPosX - PosX) * (blobPosX - PosX)) +
                                                  ((blobPosY - PosY) * (blobPosY - PosY)) +
                                                  ((blobPosZ - PosZ) * (blobPosZ - PosZ)))) * blobPower;
-                    } 
-                }
+                    }
 
-                intensity = power;
+                    intensity = power;
+                } 
 
                 return intensity;
             }
@@ -737,7 +743,7 @@ namespace Assets
             public LatticePoint GetPoint(int x, int y, int z)
             {
                 // checks if the position is inside the lattice
-                if (x < 0 || y < 0 || z < 0 || x >= dimensionX || y >= dimensionY || z >= dimensionZ)
+                if (x < 0 || y < 0 || z < 0 || x > dimensionX || y > dimensionY || z > dimensionZ)
                 {
                     return null;
                 }
@@ -788,11 +794,11 @@ namespace Assets
 
                 // create all points
                 int pointIndex = 0;
-                for (float i = 0; i < dimensionX; i++)
+                for (float i = 0; i <= dimensionX; i++)
                 {
-                    for (float j = 0; j < dimensionY; j++)
+                    for (float j = 0; j <= dimensionY; j++)
                     {
-                        for (float k = 0; k < dimensionZ; k++)
+                        for (float k = 0; k <= dimensionZ; k++)
                         {
                             pointArray[pointIndex] = new LatticePoint((i / dimensionX) - 0.5f, (j / dimensionY) -0.5f, (k / dimensionZ) -0.5f, system);
                             pointIndex++;
@@ -836,9 +842,6 @@ namespace Assets
                             points[5] = GetPoint(i + 1, j, k + 1);
                             points[6] = GetPoint(i + 1, j + 1, k + 1);
                             points[7] = GetPoint(i, j + 1, k + 1);
-
-                            if (points[0] == null || points[1] == null || points[2] == null || points[3] == null || points[4] == null || points[5] == null || points[6] == null || points[7] == null)
-                                Debug.Log("Problem");
 
                             LatticeEdge[] edges = cube.edgeArray;
 
