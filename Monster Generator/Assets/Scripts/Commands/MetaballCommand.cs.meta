@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 388982d44f8f24f4481b72c2401cea79
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - metaballPrefab: {fileID: 1504215716465222, guid: 56b7b96fe4cbdbe42868c8178c47736c,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

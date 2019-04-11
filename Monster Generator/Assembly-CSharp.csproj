@@ -59,19 +59,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\CommandExecuter.cs" />
-    <Compile Include="Assets\CreatureGenerator.cs" />
-    <Compile Include="Assets\LindenmayerSystem.cs" />
-    <Compile Include="Assets\Metaball.cs" />
-    <Compile Include="Assets\MetaballSpawner.cs" />
-    <Compile Include="Assets\MetaballSystem.cs" />
-    <Compile Include="Assets\Rule.cs" />
-    <Compile Include="Assets\Scripts\MCBlob.cs" />
-    <Compile Include="Assets\Scripts\OnLiquidGrounded.cs" />
-    <Compile Include="Assets\Scripts\OriginalMCBlob.cs" />
-    <Compile Include="Assets\Settings.cs" />
-    <Compile Include="Assets\StochasticRule.cs" />
-    <Compile Include="Assets\TextChange.cs" />
+    <Compile Include="Assets\NotMyScipts\MCBlob.cs" />
+    <Compile Include="Assets\NotMyScipts\OnLiquidGrounded.cs" />
+    <Compile Include="Assets\NotMyScipts\OriginalMCBlob.cs" />
+    <Compile Include="Assets\Scripts\Commands\CommandExecuter.cs" />
+    <Compile Include="Assets\Scripts\Commands\ICommand.cs" />
+    <Compile Include="Assets\Scripts\Commands\MetaballCommand.cs" />
+    <Compile Include="Assets\Scripts\Commands\PositionCommand.cs" />
+    <Compile Include="Assets\Scripts\Commands\ResetPositionCommand.cs" />
+    <Compile Include="Assets\Scripts\Commands\RotationCommand.cs" />
+    <Compile Include="Assets\Scripts\CreatureGenerator.cs" />
+    <Compile Include="Assets\Scripts\Etc\Settings.cs" />
+    <Compile Include="Assets\Scripts\Etc\TextChange.cs" />
+    <Compile Include="Assets\Scripts\L-System\LindenmayerSystem.cs" />
+    <Compile Include="Assets\Scripts\L-System\Rule.cs" />
+    <Compile Include="Assets\Scripts\L-System\StochasticRule.cs" />
+    <Compile Include="Assets\Scripts\Metaball\Metaball.cs" />
+    <Compile Include="Assets\Scripts\Metaball\MetaballSpawner.cs" />
+    <Compile Include="Assets\Scripts\Metaball\MetaballSystem.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>U:/Creature_Generator/Monster Generator/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
