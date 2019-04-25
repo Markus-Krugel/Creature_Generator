@@ -8,7 +8,7 @@ public class Settings : MonoBehaviour{
     static float minIsoLevel = 0, maxIsoLevel = 15;
     static int maxArms = 4, maxHeads = 4, maxLegs = 4;
     public int amountArms, amountHeads, amountLegs;
-    public float isoLevel;
+    public float isoLevel = 4.3f;
 
     public Slider legSlider, armSlider, headSlider, isoSlider;
 

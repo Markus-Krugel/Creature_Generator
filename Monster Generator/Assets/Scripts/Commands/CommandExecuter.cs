@@ -6,18 +6,28 @@ using UnityEngine;
 
 namespace Assets
 {
-    class CommandExecuter
+    class CommandExecuter : MonoBehaviour
     {
         string commandString;
-        Vector3 position = Vector3.zero;
+        Vector3 position = new Vector3(0.1f, 0.1f, 0.1f);
         Quaternion rotation = Quaternion.identity;
 
         Dictionary<char, ICommand> commandDictionary = new Dictionary<char, ICommand>();
+
+        public CommandExecuter()
+        {
+            FillCommandDictionary();
+        }
 
         public CommandExecuter(string commandString)
         {
             this.commandString = commandString;
             FillCommandDictionary();
+        }
+
+        public void SetCommandString(string commandString)
+        {
+            this.commandString = commandString;
         }
 
         public void FillCommandDictionary()

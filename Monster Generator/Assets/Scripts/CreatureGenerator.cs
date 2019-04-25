@@ -11,15 +11,20 @@ namespace Assets
         CommandExecuter executer;
         LindenmayerSystem lindenmayer;
         MetaballSystem metaballSystem;
-        Settings settings;
-
-        public void SetLindenmayer(LindenmayerSystem lindenmayer)
-        {
-            this.lindenmayer = lindenmayer;
-        }
+        Settings settings;        
 
         private void Awake()
         {
+            lindenmayer = new LindenmayerSystem();
+            executer = new CommandExecuter();       
+        }
+
+        private void Start()
+        {
+            metaballSystem = GetComponent("MetaballSystem") as MetaballSystem;
+            settings = GetComponent("Settings") as Settings;
+            metaballSystem.ChangeIsoLevel(settings.isoLevel);
+
             CreateCreature();
         }
 
@@ -30,14 +35,30 @@ namespace Assets
 
         public void CreateCreature()
         {
-            lindenmayer = new LindenmayerSystem();
-            lindenmayer.CreateRuleset(1, 2, 2);
+            
+            lindenmayer.CreateRuleset(settings.amountHeads,settings.amountLegs,settings.amountArms);
 
-            executer = new CommandExecuter(lindenmayer.RunSystem("B", 3));
+            executer.SetCommandString(lindenmayer.RunSystem("L", 3));
             executer.RunCommands();
 
             metaballSystem.StartSystem();
             metaballSystem.UpdateSystem();
+        }
+
+        public void SetLindenmayer(LindenmayerSystem lindenmayer)
+        {
+            this.lindenmayer = lindenmayer;
+        }
+
+        public void SetExecuter(CommandExecuter executer)
+        {
+            this.executer = executer;
+        }
+
+        public void ChangeIsoLevel(float isoLevel)
+        {
+            settings.ChangeIsoLevel(isoLevel);
+            metaballSystem.ChangeIsoLevel(isoLevel);
         }
     }
 }

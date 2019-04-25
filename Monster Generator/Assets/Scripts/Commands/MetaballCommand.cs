@@ -18,7 +18,9 @@ namespace Assets
 
         public void SpawnMetaball(Vector3 vector)
         {
-            GameObject metaball = Instantiate(metaballPrefab, vector, Quaternion.identity);
+            GameObject metaball = Resources.Load<GameObject>("Metaball");
+
+            Instantiate(metaball, vector, Quaternion.identity);
 
             Metaball values = metaball.GetComponent<Metaball>();
             values.PosX = vector.x;
