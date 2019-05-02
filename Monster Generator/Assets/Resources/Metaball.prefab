@@ -9,7 +9,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: power
-      value: 0.16
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 0}
@@ -55,4 +55,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be698d3a72794034c92d082d4f8f20ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  power: 0.16
+  power: 0.01

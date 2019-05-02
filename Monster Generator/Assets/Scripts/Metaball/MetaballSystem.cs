@@ -330,15 +330,19 @@ namespace Assets
         {
             metaballs = new List<Metaball>();
 
+            lattice = new Lattice(30, 30, 30, this);
+            InitialiseVectors();
+        }
+
+        public void CollectMetaballs()
+        {
             // get the metaballs in the scene
             GameObject[] metaballObjects = GameObject.FindGameObjectsWithTag("Metaball");
             for (int i = 0; i < metaballObjects.Length; i++)
             {
                 metaballs.Add(metaballObjects[i].GetComponent<Metaball>());
             }
-
-            lattice = new Lattice(30, 30, 30, this);
-            InitialiseVectors();
+            metaballs = metaballs.Distinct().ToList();
         }
 
         public void InitialiseVectors()

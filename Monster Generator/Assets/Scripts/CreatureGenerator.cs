@@ -11,7 +11,11 @@ namespace Assets
         CommandExecuter executer;
         LindenmayerSystem lindenmayer;
         MetaballSystem metaballSystem;
-        Settings settings;        
+        Settings settings;
+        Rotate rotation;
+
+        bool creatureGenerated = false;
+        const int maxIterations = 15; 
 
         private void Awake()
         {
@@ -23,26 +27,43 @@ namespace Assets
         {
             metaballSystem = GetComponent("MetaballSystem") as MetaballSystem;
             settings = GetComponent("Settings") as Settings;
+            rotation = GetComponent("Rotate") as Rotate;
             metaballSystem.ChangeIsoLevel(settings.isoLevel);
-
-            CreateCreature();
         }
 
         private void Update()
         {
-            metaballSystem.UpdateSystem();
+            if(creatureGenerated)
+                metaballSystem.UpdateSystem();
         }
 
         public void CreateCreature()
         {
-            
-            lindenmayer.CreateRuleset(settings.amountHeads,settings.amountLegs,settings.amountArms);
+            // Delete the metaballs of the previous creation
+            if (creatureGenerated)
+            {
+                for (int i = 0; i < metaballSystem.metaballs.Count; i++)
+                {
+                    GameObject.Destroy(metaballSystem.metaballs[i].gameObject);          
+                }
 
-            executer.SetCommandString(lindenmayer.RunSystem("L", 3));
+                metaballSystem.metaballs = metaballSystem.metaballs.Where(item => item != null).ToList();
+            }
+
+            // Create the ruleset for the creature generation
+            lindenmayer.SetBodyPartsAmount(settings.amountHeads,settings.amountArms,settings.amountLegs);
+
+            executer.SetCommandString(lindenmayer.RunSystem(maxIterations));
             executer.RunCommands();
 
-            metaballSystem.StartSystem();
+            if(!creatureGenerated)
+                metaballSystem.StartSystem();
+
+            metaballSystem.CollectMetaballs();
             metaballSystem.UpdateSystem();
+
+            creatureGenerated = true;
+            rotation.active = true;
         }
 
         public void SetLindenmayer(LindenmayerSystem lindenmayer)

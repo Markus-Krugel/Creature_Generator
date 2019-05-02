@@ -9,8 +9,13 @@ namespace Assets
     class CommandExecuter : MonoBehaviour
     {
         string commandString;
-        Vector3 position = new Vector3(0.1f, 0.1f, 0.1f);
+        Vector3 position = Vector3.zero;
         Quaternion rotation = Quaternion.identity;
+
+        int maxXBodyPosition;
+        int minXBodyPosition;
+        int maxZBodyPosition;
+        int minZBodyPosition;
 
         Dictionary<char, ICommand> commandDictionary = new Dictionary<char, ICommand>();
 
@@ -42,17 +47,24 @@ namespace Assets
             ResetPositionCommand resetX = new ResetPositionCommand();
             ResetPositionCommand resetY = new ResetPositionCommand();
             ResetPositionCommand resetZ = new ResetPositionCommand();
+            ResetPositionCommand resetAll = new ResetPositionCommand();
 
+            /* Move left is P because L was already taken for the leg rule in the lindenmayer system
+                and it would only complicate it more if both have same char
+                Move backwards is N because B was already taken for the body rule in the lindenmayer system
+                and it would only complicate it more if both have same char
+            */
+            commandDictionary.Add('P', moveLeft);
             commandDictionary.Add('M', metaball);
-            commandDictionary.Add('L', moveLeft);
             commandDictionary.Add('R', moveRight);
             commandDictionary.Add('U', moveUp);
             commandDictionary.Add('D', moveDown);
             commandDictionary.Add('F', moveForward);
-            commandDictionary.Add('B', moveBackwards);
+            commandDictionary.Add('N', moveBackwards);
             commandDictionary.Add('X', resetX);
             commandDictionary.Add('Y', resetY);
             commandDictionary.Add('Z', resetZ);
+            commandDictionary.Add('Q', resetAll);
         }
 
         public void RunCommands()
@@ -61,7 +73,7 @@ namespace Assets
             for (int i = 0; i < commandString.Length; i++)
             {
                 // if metaball command just spawn at the position
-                if(commandString[i] == 'M')
+                if (commandString[i] == 'M')
                     commandDictionary[commandString[i]].Execute(position);
                 // if reset command then reset the correct dimension
                 else if(commandString[i] == 'X')
@@ -70,7 +82,7 @@ namespace Assets
                     position.y = commandDictionary[commandString[i]].Execute(position).y;
                 else if (commandString[i] == 'Z')
                     position.z = commandDictionary[commandString[i]].Execute(position).z;
-                // else it is a move command and then adjust the position accordingly
+                // else it is a move command or resetPosition and then adjust the position accordingly
                 else 
                     position = commandDictionary[commandString[i]].Execute(position);
             }

@@ -23,6 +23,7 @@ namespace Assets
     {
         float sumPercentages;
         List<Possibility> resultPossibilities;
+        Random random = new Random();
 
         public StochasticRule(char input)
         {
@@ -44,6 +45,11 @@ namespace Assets
         public void AddPossibility(float percentage, string output)
         {
             resultPossibilities.Add(new Possibility(percentage, output));        
+        }
+
+        public override void SetEndPossibility(Possibility end)
+        {
+            endPossibility = end;
         }
 
         private void NormalizePercentages()
@@ -70,7 +76,6 @@ namespace Assets
             {
                 NormalizePercentages();
 
-                Random random = new Random();
                 float randomResult = (float)random.NextDouble();
 
                 float currentPercentage = 0;

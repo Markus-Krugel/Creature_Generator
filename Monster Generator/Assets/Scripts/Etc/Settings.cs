@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour{
 
-    static float minIsoLevel = 0, maxIsoLevel = 15;
-    static int maxArms = 4, maxHeads = 4, maxLegs = 4;
+    const float minIsoLevel = 0, maxIsoLevel = 100;
+    const int maxArms = 4, maxHeads = 4, maxLegs = 4;
     public int amountArms, amountHeads, amountLegs;
-    public float isoLevel = 4.3f;
+    public float isoLevel = 15;
 
     public Slider legSlider, armSlider, headSlider, isoSlider;
 

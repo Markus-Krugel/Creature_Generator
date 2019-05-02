@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Assets
 {
+    // This class was only for testing purposes to test if the metaballs were spawned and rendered correctly.
+    // In the final result this class is not being used
     public class MetaballSpawner : MonoBehaviour {
 
         private bool spawned = false;

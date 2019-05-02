@@ -61,9 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\NotMyScipts\MCBlob.cs" />
-    <Compile Include="Assets\NotMyScipts\OnLiquidGrounded.cs" />
-    <Compile Include="Assets\NotMyScipts\OriginalMCBlob.cs" />
     <Compile Include="Assets\Scripts\Commands\CommandExecuter.cs" />
     <Compile Include="Assets\Scripts\Commands\ICommand.cs" />
     <Compile Include="Assets\Scripts\Commands\MetaballCommand.cs" />
@@ -71,6 +68,7 @@
     <Compile Include="Assets\Scripts\Commands\ResetPositionCommand.cs" />
     <Compile Include="Assets\Scripts\Commands\RotationCommand.cs" />
     <Compile Include="Assets\Scripts\CreatureGenerator.cs" />
+    <Compile Include="Assets\Scripts\Etc\Rotate.cs" />
     <Compile Include="Assets\Scripts\Etc\Settings.cs" />
     <Compile Include="Assets\Scripts\Etc\TextChange.cs" />
     <Compile Include="Assets\Scripts\L-System\LindenmayerSystem.cs" />

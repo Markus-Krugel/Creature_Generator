@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Assets
 {
+    // This command is not being used as I only have spheres currently and therefore rotation is unneccessary
     class RotationCommand : MonoBehaviour, ICommand
     {
         private Vector3 direction;
