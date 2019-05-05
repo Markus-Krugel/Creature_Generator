@@ -643,8 +643,6 @@ namespace Assets
         private class LatticePoint
         {
             public float intensity;
-            // unneccessary?
-            // public float powerX, powerY, powerZ;
 
             /* This is being used to go through all metaballs
                so that you can calculate the intensity of this point */
@@ -713,11 +711,12 @@ namespace Assets
             public LatticeEdge[] edgeArray;
             public LatticePoint[] pointArray;
             public int posX, posY, posZ, lastFrame;
+            const int AMOUNT_EDGES = 12, AMOUNT_POINTS = 8;
 
             public LatticeCube()
             {
-                edgeArray = new LatticeEdge[12];
-                pointArray = new LatticePoint[8];
+                edgeArray = new LatticeEdge[AMOUNT_EDGES];
+                pointArray = new LatticePoint[AMOUNT_POINTS];
                 lastFrame = 0;
             }
         }

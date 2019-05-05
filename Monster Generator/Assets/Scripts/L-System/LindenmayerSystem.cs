@@ -8,21 +8,21 @@ namespace Assets
 {
     public class LindenmayerSystem : MonoBehaviour
     {
-        const float pairLegs = 2.0f;
-
         Dictionary<char, Rule> ruleset;
 
+        const float PAIR_LEGS = 2.0f;
+
         // The maximum of iterations for each body part
-        const int maxHeadIterations = 3;
-        const int maxLegIterations = 4;
-        const int maxArmIterations = 2;
-        const int bodyHeigth = 6;
+        const int MAX_HEAD_ITERATIONS = 3;
+        const int MAX_LEGS_ITERATIONS = 4;
+        const int MAX_ARMS_ITERATIONS = 2;
+        const int BODY_HEIGTH = 6;
         // 2 for actual head + free space
-        const int headWidth = 4;
+        const int HEAD_WIDTH = 4;
         // 1 for actual arm + free space
-        const int armWidth = 3;
+        const int ARM_WIDTH = 3;
         // each body area is a 3x3 cube
-        const int bodySize = 3;
+        const int BODY_SIZE = 3;
 
         int amountArms;
         int amountLegs;
@@ -40,6 +40,11 @@ namespace Assets
 
         bool[] legsDone;
 
+        //stores the commands of the body parts to reverse them later to avoid misplaced body parts 
+        string[] armsLeftString;
+        string[] armsRightString;
+        string[] headsString;
+
         public LindenmayerSystem()
         {
             ruleset = new Dictionary<char, Rule>();
@@ -52,11 +57,11 @@ namespace Assets
 
             StochasticRule legRule = new StochasticRule('L');
             //metaball and up
-            legRule.AddPossibility(25, "UML");
+            legRule.AddPossibility(40, "UML");
             // metaball middle,forward and backwards
-            legRule.AddPossibility(25, "UMFNNMFL");
+            legRule.AddPossibility(30, "UMFMNNMFL");
             // metaballs in a diamond form
-            legRule.AddPossibility(25, "UFMNPMRNMFML");
+            legRule.AddPossibility(30, "UFMNPMRNMFL");
 
             Possibility endLegPossibility = new Possibility(15, "MUB");
             legRule.AddPossibility(endLegPossibility);
@@ -67,7 +72,7 @@ namespace Assets
             //add metaballs in a 3x3 cube with another iteration for body
             Rule bodyRule = new Rule('B', "MFMRMNMNMPMPMFMFMRNUB");
             //add metaballs in a 3x3 cube, ends the body in this area and reset the position
-            Possibility endBodyPossibility = new Possibility(0, "MFMRMNMNMPMPMFMFMQ");
+            Possibility endBodyPossibility = new Possibility(0, "MFMRMNMNMPMPMFMFMRNQ");
             bodyRule.SetEndPossibility(endBodyPossibility);
 
             // left arm rule
@@ -94,7 +99,7 @@ namespace Assets
 
             Rule headRule = new Rule('H',"MRMUPH");
 
-            Possibility endHeadPossibility = new Possibility(20, "MRM");
+            Possibility endHeadPossibility = new Possibility(0, "MRMP");
             headRule.SetEndPossibility(endHeadPossibility);
 
             // Add the created rules to the ruleset
@@ -113,11 +118,39 @@ namespace Assets
             bodyIterations = new int[legs];
             leftArmIterations = new int[arms];
             rightArmIterations = new int[arms];
+
+            armsLeftString = new string[arms];
+            armsRightString = new string[arms];
+            headsString = new string[heads];
+
             legsDone = new bool[legs];
 
             amountLegs = legs;
             amountHeads = heads;
             amountArms = arms;
+        }      
+
+        /// <summary>
+        /// Start the string by adding legs depending on legs amount
+        /// </summary>
+        /// <returns></returns>
+        private string AddLegs()
+        {
+            StringBuilder start = new StringBuilder();
+
+            // The amount of iterations to add legs in pairs, rounds up so that a single leg can be added
+            int iterationsLeg = (int)Math.Ceiling(amountLegs / PAIR_LEGS);
+
+            for (int i = 0; i < iterationsLeg; i++)
+            {
+                // Add a single leg if odd amount of legs and last iteration
+                if (i == iterationsLeg - 1 && amountLegs % PAIR_LEGS == 1)
+                    start.Append("ML");
+                // Add legs in pairs(left,leg,resetX,Right,leg,forward,forward)
+                else
+                    start.Append("PMLRRMLPFF");
+            }
+            return start.ToString();
         }
 
         /// <summary>
@@ -129,40 +162,38 @@ namespace Assets
             StringBuilder toAdd = new StringBuilder();
 
             // reset Z Position
-            toAdd.Append("Z");
+            toAdd.Append("Q");
 
             int additionalBodyIterationsZ = 0;
             int additionalBodyIterationsX = 0;
 
-            int bodyWidthZ = (int)(amountLegs / pairLegs) * bodySize;
-            int neededArmWidth = amountArms * armWidth;
+            int bodyWidthZ = (int)(amountLegs / PAIR_LEGS) * BODY_SIZE;
+            int neededArmWidth = amountArms * ARM_WIDTH;
 
             if (neededArmWidth > bodyWidthZ)
             {
                 int armDifference = neededArmWidth - bodyWidthZ;
-                // Multiplied by 1.0f so that it is a float and therefore no error
-                additionalBodyIterationsZ = (int)Math.Ceiling(armDifference / bodySize * 1.0f);
+                additionalBodyIterationsZ = (int)Math.Ceiling((double)armDifference / BODY_SIZE);
             }
 
-            int bodyWidthX = bodySize;
+            int bodyWidthX = BODY_SIZE;
 
             if (amountLegs > 1)
-                bodyWidthX = bodySize * 2;
+                bodyWidthX = BODY_SIZE * 2;
 
-            int neededHeadWith = amountHeads * headWidth;
+            int neededHeadWith = amountHeads * HEAD_WIDTH;
 
             if (neededHeadWith > bodyWidthX)
             {
                 int headDifference = neededHeadWith - bodyWidthX;
-                // Multiplied by 1.0f so that it is a float and therefore no error
-                additionalBodyIterationsX = (int)Math.Ceiling(headDifference / bodySize * 1.0f);
+                additionalBodyIterationsX = (int)Math.Ceiling((double)headDifference / BODY_SIZE);
             }
 
             // Set to the correct heigth
             toAdd.Append("UUUUU");
 
             // if odd then left side gets the additional one
-            int iterationsLeftSide = (int)Math.Ceiling(additionalBodyIterationsX / 2 * 1.0f);
+            int iterationsLeftSide = (int)Math.Ceiling((double)additionalBodyIterationsX / 2);
             int iterationsRightSide = additionalBodyIterationsX / 2;
 
             // Adds additonal body parts for the heads
@@ -197,7 +228,7 @@ namespace Assets
             }
 
             // Adds additional body parts for the arms
-            if(additionalBodyIterationsZ != 0)
+            if (additionalBodyIterationsZ != 0)
             {
                 string direction = "RR";
 
@@ -263,7 +294,7 @@ namespace Assets
             for (int i = 0; i < amountArms; i++)
             {
                 toAdd.Append("RAP");
-                toAdd.Append('N', armWidth);
+                toAdd.Append('N', ARM_WIDTH);
             }
 
             toAdd.Append("QUUUUU");
@@ -284,7 +315,7 @@ namespace Assets
             for (int i = 0; i < amountArms; i++)
             {
                 toAdd.Append("PVR");
-                toAdd.Append('N', armWidth);
+                toAdd.Append('N', ARM_WIDTH);
             }
 
             toAdd.Append("QUUUUU");
@@ -304,31 +335,17 @@ namespace Assets
             for (int i = 0; i < amountHeads; i++)
             {
                 toAdd.Append("NHF");
-                toAdd.Append('R', headWidth);
+                toAdd.Append('R', HEAD_WIDTH);
             }
 
             return toAdd.ToString();
         }
 
-        private string AddLegs()
-        {
-            StringBuilder start = new StringBuilder();
-
-            // The amount of iterations to add legs in pairs, rounds up so that a single leg can be added
-            int iterationsLeg = (int)Math.Ceiling(amountLegs / pairLegs);
-
-            for (int i = 0; i < iterationsLeg; i++)
-            {
-                // Add a single leg if odd amount of legs and last iteration
-                if (i == iterationsLeg - 1 && amountLegs % pairLegs == 1)
-                    start.Append("ML");
-                // Add legs in pairs(left,leg,resetX,Right,leg,forward,forward)
-                else
-                    start.Append("PMLRRMLFF");
-            }
-            return start.ToString();
-        }
-
+        /// <summary>
+        /// The main function of the class. Defines the shape of the creature by replacing chars of the string
+        /// </summary>
+        /// <param name="iterations">The number of iterations the system runs through</param>
+        /// <returns>Returns the string which defines the shape of the creature</returns>
         public string RunSystem(int iterations)
         {
             string result = AddLegs();
@@ -357,6 +374,7 @@ namespace Assets
                 {
                     Rule rule = null;
 
+                    // Get the rule of the char if available
                     if (ruleset.TryGetValue(result[j], out rule))
                     {
 
@@ -375,25 +393,25 @@ namespace Assets
                                     legsIndex++;
                                 }
 
-                                if (legIterations[legsIndex] == maxLegIterations)
+                                if (legIterations[legsIndex] == MAX_LEGS_ITERATIONS)
                                     maxIterationsReached = true;
                                 break;
                             case 'A':
-                                if (leftArmIterations[leftArmsIndex] == maxArmIterations)
+                                if (leftArmIterations[leftArmsIndex] == MAX_ARMS_ITERATIONS)
                                     maxIterationsReached = true;
                                 break;
                             case 'V':
-                                if (rightArmIterations[rightArmsIndex] == maxArmIterations)
+                                if (rightArmIterations[rightArmsIndex] == MAX_ARMS_ITERATIONS)
                                     maxIterationsReached = true;
                                 break;
                             case 'H':
-                                if (headIterations[headsIndex] == maxHeadIterations)
+                                if (headIterations[headsIndex] == MAX_HEAD_ITERATIONS)
                                     maxIterationsReached = true;
                                 break;
                             case 'B':
                                 if (!addedArmsAndHeads)
                                 {
-                                    if (bodyIterations[bodyIndex] + legIterations[bodyIndex] == bodyHeigth)
+                                    if (bodyIterations[bodyIndex] + legIterations[bodyIndex] == BODY_HEIGTH)
                                     {
                                         maxIterationsReached = true;
                                         bodyDone = true;
@@ -403,27 +421,100 @@ namespace Assets
                         }
 
                         Debug.Log(result);
-                        // If max iterations reached then end the body part
                         string output;
 
-
+                        // If max iterations reached then end the body part
                         if (maxIterationsReached)
                         {
-                            // set iteration value of body part to -1 if endresult, so that it skips its index next time
                             output = rule.GiveEndString();
+
+                            if (result[j] == 'A')
+                            {
+                                armsLeftString[leftArmsIndex] += output;
+
+                                char[] reverseCharArray = armsLeftString[leftArmsIndex].ToCharArray();
+                                Array.Reverse(reverseCharArray);
+
+                                string reverseString = new string(reverseCharArray);
+
+                                // Replaces characters with opposite direction to move back
+                                reverseString = reverseString.Replace("M", string.Empty);
+                                reverseString = reverseString.Replace("A", string.Empty);
+                                reverseString = reverseString.Replace('U', 'D');
+                                reverseString = reverseString.Replace('D', 'U');
+                                reverseString = reverseString.Replace('R', 'P');
+
+                                output += reverseString;
+                            }
+                            if (result[j] == 'V')
+                            {
+                                armsRightString[rightArmsIndex] += output;
+
+                                char[] reverseCharArray = armsRightString[rightArmsIndex].ToCharArray();
+                                Array.Reverse(reverseCharArray);
+
+                                string reverseString = new string(reverseCharArray);
+
+                                // Replaces characters with opposite direction to move back
+                                reverseString = reverseString.Replace("M", string.Empty);
+                                reverseString = reverseString.Replace("V", string.Empty);
+                                reverseString = reverseString.Replace('U', 'D');
+                                reverseString = reverseString.Replace('D', 'U');
+                                reverseString = reverseString.Replace('P', 'R');
+
+                                output += reverseString;
+                            }
+                            if (result[j] == 'H')
+                            {
+                                headsString[headsIndex] += output;
+
+                                char[] reverseCharArray = headsString[headsIndex].ToCharArray();
+                                Array.Reverse(reverseCharArray);
+
+                                string reverseString = new string(reverseCharArray);
+
+                                // Replaces characters with opposite direction to move back
+                                reverseString = reverseString.Replace("M", string.Empty);
+                                reverseString = reverseString.Replace("H", string.Empty);
+                                reverseString = reverseString.Replace('U', 'D');
+                                reverseString = reverseString.Replace('D', 'U');
+                                reverseString = reverseString.Replace('P', 'R');
+                                reverseString = reverseString.Replace('R', 'P');
+
+                                output += reverseString;
+                            }
                         }
                         // For the body expansion of arms and heads added
-                        else if (addedArmsAndHeads && (result[j] == 'B'))
+                        else if (addedArmsAndHeads && result[j] == 'B')
                         {
+                            // Add the end possibility of the body without the reset position at the end
                             output = rule.GiveEndString();
+                            output = output.Remove(output.Length - 1);
+
+                            // Add the output to the array to reverse it later
+                            if (result[j] == 'A')
+                                armsLeftString[leftArmsIndex] += output;
+                            if (result[j] == 'V')
+                                armsRightString[rightArmsIndex] += output;
+                            if (result[j] == 'H')
+                                headsString[headsIndex] += output;
                         }
                         else
                         {
                             output = rule.GiveResult();
                             if (output == rule.GiveEndString() && result[j] == 'L')
                                 legsDone[legsIndex] = true;
+
+                            // Add the output to the array to reverse it later
+                            if (result[j] == 'A')
+                                armsLeftString[leftArmsIndex] += output;
+                            if (result[j] == 'V')
+                                armsRightString[rightArmsIndex] += output;
+                            if (result[j] == 'H')
+                                headsString[headsIndex] += output;
                         }
 
+                        // advances the according indexes and iterations
                         switch (result[j])
                         {
                             case 'L':
@@ -431,8 +522,10 @@ namespace Assets
                                 legsIndex++;
                                 break;
                             case 'A':
+
                                 leftArmIterations[leftArmsIndex]++;
                                 leftArmsIndex++;
+
                                 break;
                             case 'V':
                                 rightArmIterations[rightArmsIndex]++;
@@ -458,15 +551,21 @@ namespace Assets
                     } 
                 }  
                 
+                // if the body is created add the arms and heads to the creature
                 if(bodyDone)
                 {
-                    result += AddArmsAndHeads();
-                    bodyDone = false;
-                    addedArmsAndHeads = true;
+                    Rule bodyRule;
+                    ruleset.TryGetValue('B', out bodyRule);
+                    result = result.Replace("B", bodyRule.GiveEndString());
 
-                    interationBodyDone = i;
+                   result += AddArmsAndHeads();
+                   bodyDone = false;
+                   addedArmsAndHeads = true;
+                   
+                   interationBodyDone = i;
                 }
 
+                // the addition of the arms and heads are done in the iteration after adding
                 if (i == interationBodyDone + 1)
                     addedArmsAndHeads = false;
             }

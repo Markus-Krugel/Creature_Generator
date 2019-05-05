@@ -10,12 +10,6 @@ namespace Assets
     {
         string commandString;
         Vector3 position = Vector3.zero;
-        Quaternion rotation = Quaternion.identity;
-
-        int maxXBodyPosition;
-        int minXBodyPosition;
-        int maxZBodyPosition;
-        int minZBodyPosition;
 
         Dictionary<char, ICommand> commandDictionary = new Dictionary<char, ICommand>();
 
@@ -44,6 +38,7 @@ namespace Assets
             PositionCommand moveDown = new PositionCommand(new Vector3(0, -0.1f, 0));
             PositionCommand moveForward = new PositionCommand(new Vector3(0, 0, 0.1f));
             PositionCommand moveBackwards = new PositionCommand(new Vector3(0, 0, -0.1f));
+            SphereCommand sphere = new SphereCommand();
             ResetPositionCommand resetX = new ResetPositionCommand();
             ResetPositionCommand resetY = new ResetPositionCommand();
             ResetPositionCommand resetZ = new ResetPositionCommand();
@@ -65,6 +60,7 @@ namespace Assets
             commandDictionary.Add('Y', resetY);
             commandDictionary.Add('Z', resetZ);
             commandDictionary.Add('Q', resetAll);
+            commandDictionary.Add('S', sphere);
         }
 
         public void RunCommands()

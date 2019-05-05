@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour{
 
-    const float minIsoLevel = 0, maxIsoLevel = 100;
-    const int maxArms = 4, maxHeads = 4, maxLegs = 4;
+    const float MIN_ISO_LEVEL = 0, MAX_ISO_LEVEL = 100;
+    const int MAX_ARMS = 4, MAX_HEADS = 4, MAX_LEGS = 4;
+
     public int amountArms, amountHeads, amountLegs;
     public float isoLevel = 15;
 
@@ -43,10 +44,10 @@ public class Settings : MonoBehaviour{
     public void Random()
     {
         // no need to change values here as sliders onvaluechanged events do it too
-        legSlider.value = UnityEngine.Random.Range(0, maxLegs + 1);
-        armSlider.value = UnityEngine.Random.Range(0, maxArms + 1);
-        headSlider.value = UnityEngine.Random.Range(0, maxHeads + 1);
+        legSlider.value = UnityEngine.Random.Range(0, MAX_LEGS + 1);
+        armSlider.value = UnityEngine.Random.Range(0, MAX_ARMS + 1);
+        headSlider.value = UnityEngine.Random.Range(0, MAX_HEADS + 1);
 
-        isoSlider.value = UnityEngine.Random.Range(minIsoLevel, maxIsoLevel + 1);
+        isoSlider.value = UnityEngine.Random.Range(MIN_ISO_LEVEL, MAX_ISO_LEVEL + 1);
     }
 }

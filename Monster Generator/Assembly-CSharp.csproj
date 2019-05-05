@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\Commands\PositionCommand.cs" />
     <Compile Include="Assets\Scripts\Commands\ResetPositionCommand.cs" />
     <Compile Include="Assets\Scripts\Commands\RotationCommand.cs" />
+    <Compile Include="Assets\Scripts\Commands\SphereCommand.cs" />
     <Compile Include="Assets\Scripts\CreatureGenerator.cs" />
     <Compile Include="Assets\Scripts\Etc\Rotate.cs" />
     <Compile Include="Assets\Scripts\Etc\Settings.cs" />

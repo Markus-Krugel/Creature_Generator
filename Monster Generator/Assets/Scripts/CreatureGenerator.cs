@@ -39,12 +39,19 @@ namespace Assets
 
         public void CreateCreature()
         {
-            // Delete the metaballs of the previous creation
+            // Delete the metaballs and spheres of the previous creation
             if (creatureGenerated)
             {
                 for (int i = 0; i < metaballSystem.metaballs.Count; i++)
                 {
                     GameObject.Destroy(metaballSystem.metaballs[i].gameObject);          
+                }
+
+                GameObject[] previousSpheres = GameObject.FindGameObjectsWithTag("Sphere");
+
+                for (int i = 0; i < previousSpheres.Length; i++)
+                {
+                    GameObject.Destroy(previousSpheres[i]);
                 }
 
                 metaballSystem.metaballs = metaballSystem.metaballs.Where(item => item != null).ToList();
@@ -53,7 +60,7 @@ namespace Assets
             // Create the ruleset for the creature generation
             lindenmayer.SetBodyPartsAmount(settings.amountHeads,settings.amountArms,settings.amountLegs);
 
-            executer.SetCommandString(lindenmayer.RunSystem(maxIterations));
+            executer.SetCommandString(lindenmayer.RunSystem(maxIterations).Replace('M','S'));
             executer.RunCommands();
 
             if(!creatureGenerated)

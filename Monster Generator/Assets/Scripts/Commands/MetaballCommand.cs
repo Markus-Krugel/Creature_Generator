@@ -18,17 +18,14 @@ namespace Assets
 
         public void SpawnMetaball(Vector3 vector)
         {
-            //GameObject metaball = Resources.Load<GameObject>("Metaball");
-            //
-            //Instantiate(metaball, vector, Quaternion.identity);
-            //
-            //Metaball values = metaball.GetComponent<Metaball>();
-            //values.PosX = vector.x;
-            //values.PosY = vector.y;
-            //values.PosZ = vector.z;
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.position = vector;
-            cube.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+            GameObject metaball = Resources.Load<GameObject>("Metaball");
+            
+            Instantiate(metaball, vector, Quaternion.identity);
+            
+            Metaball values = metaball.GetComponent<Metaball>();
+            values.PosX = vector.x;
+            values.PosY = vector.y;
+            values.PosZ = vector.z;
         }
     }
 }

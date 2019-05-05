@@ -64,6 +64,7 @@ namespace Assets
                 resultPossibilities[i].percentage *= factor;
         }
 
+        // Shows all possibilities for debug purposes
         public void showAllPossibilities()
         {
             foreach (Possibility possibility in resultPossibilities)
